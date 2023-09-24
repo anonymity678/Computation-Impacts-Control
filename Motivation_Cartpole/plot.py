@@ -47,5 +47,5 @@ ax.legend(fontsize=font_size)
 plt.tight_layout()
 
 # Save the figure as a PDF
-plt.savefig('model_based_motivation.pdf', bbox_inches='tight')
+plt.savefig('Motivation_Cartpole.pdf', bbox_inches='tight')
 plt.show()
