@@ -12,7 +12,10 @@ plt.rcParams['font.family'] = "sans-serif"
 
 # Custom formatter function
 def my_formatter(x, pos):
-    return "{:.1f}".format(x * 1e3)
+    return "{:.0f}".format(x * 1e5)
+
+def my_formatter2(x, pos):
+    return "{:.0f}".format(x * 1e4)
 
 folder_name = "./"
 
@@ -35,7 +38,7 @@ sample_points_squared = []
 point_seq = []
 
 for file, color in zip(file_list, colors):
-    w = np.load(os.path.join(folder_name, file), allow_pickle=True)
+    w, _, _ = np.load(os.path.join(folder_name, file), allow_pickle=True)
     sample_point = int(file.split("_")[1].split(".")[0])
 
     w_seq.append(w)
@@ -52,13 +55,15 @@ ax.scatter(sample_points_squared, w_seq, color='ForestGreen', marker='P', s=100)
 
 
 ax.set_xlabel(r'${1}/{N^{4}}$', fontsize=font_size)
-ax.set_ylabel(r'$||\omega-\omega^*||_2$', fontsize=font_size)
+ax.set_ylabel(r'$||\hat{\omega}^{(\infty)}-\omega^*||_2$', fontsize=font_size)
 ax.tick_params(axis='x', labelsize=font_size)
 ax.tick_params(axis='y', labelsize=font_size)
 
+yticks_original = np.array([2, 4, 6]) * 1e-5
+ax.set_yticks(yticks_original)
 # Using FuncFormatter to format y-axis ticks
 ax.yaxis.set_major_formatter(FuncFormatter(my_formatter))
-ax.annotate(r'$\times 10^{-3}$',
+ax.annotate(r'$\times 10^{-5}$',
             xy=(0.1, 1),
             xycoords='axes fraction',
             xytext=(0, 10),
@@ -67,5 +72,16 @@ ax.annotate(r'$\times 10^{-3}$',
             ha='right',
             va='bottom')
 
+# ax.xaxis.set_major_formatter(FuncFormatter(my_formatter2))
+# ax.annotate(r'$\times 10^{-4}$',
+#             xy=(1, -0.1),  # 重新调整箭头的位置以适应x轴
+#             xycoords='axes fraction',
+#             xytext=(0, -30),  # 重新调整文本的位置以适应x轴
+#             textcoords='offset points',
+#             fontsize=font_size,
+#             ha='right',
+#             va='bottom')
+
+
 plt.tight_layout()
-plt.savefig(f'./tos_Matern_4.pdf')
+plt.savefig(f'./tos_Matern_4_w.pdf')

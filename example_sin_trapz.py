@@ -12,7 +12,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Parameters for PN-ADP')
     parser.add_argument('--xn', type=int, default=2, help='Dimension of the state')
     parser.add_argument('--un', type=int, default=1, help='Dimension of the input')
-    parser.add_argument('--num_points', type=int, default=2,
+    parser.add_argument('--num_points', type=int, default=5,
                         help='Num of the points for integration')
     parser.add_argument('--N', type=int, default=20,
                         help='Num of the row of the LS matrix, should be at least xn^2+2*xn*un')
@@ -114,24 +114,50 @@ if __name__ == "__main__":
         print('w-w_opt =', np.linalg.norm(w - w_opt))
         iteration += 1
 
-    T_eval = 100 * T
-    t_eval = np.arange(0, T_eval + 1e-10, sample_interval / 10)
-    t_span = [t_eval[0], t_eval[-1]]
-    X0 = np.append(env.x0_env, 0)
-    sol = solve_ivp(sample_env, t_span=t_span, y0=X0, method='RK45', t_eval=t_eval, rtol=1e-8, atol=1e-8)
-    x_plot = sol.y[0:-1, :]
-    J = sol.y[-1, -1] - sol.y[-1, 0]
-    for i in range(x_plot.shape[0]):
-        plt.figure(i)
-        plt.plot(t_eval, x_plot.T[:, i])
+    P = np.array([[w[0], 0.5*w[1]], [0.5*w[1], w[2]]])
+    P_opt = np.array([[w_opt[0], 0.5*w_opt[1]], [0.5*w_opt[1], w_opt[2]]])
 
-    w_old = w
-    w = env.wopt
-    sol = solve_ivp(sample_env, t_span=t_span, y0=X0, method='RK45', t_eval=t_eval, rtol=1e-8, atol=1e-8)
-    J_opt = sol.y[-1, -1] - sol.y[-1, 0]
+    # T_eval = 1000 * T
+    # t_eval = np.arange(0, T_eval + 1e-10, sample_interval / 10)
+    # t_span = [t_eval[0], t_eval[-1]]
+
+    # J_seq = []
+    # J_opt_seq = []
+    #
+    mean = np.zeros((xn,))
+    cov = 10000*np.eye(xn)
+    #
+    w_old = w.copy()
+
+    # for MC in range(100):
+    #     w = w_old
+    #     samples = np.random.multivariate_normal(mean, cov)
+    #     X0 = np.append(samples, 0)
+    #     sol = solve_ivp(sample_env, t_span=t_span, y0=X0, method='RK45', t_eval=t_eval, rtol=1e-8, atol=1e-8)
+    #     J = sol.y[-1, -1] - sol.y[-1, 0]
+    #     J_seq.append(J)
+    #     w = w_opt
+    #     sol = solve_ivp(sample_env, t_span=t_span, y0=X0, method='RK45', t_eval=t_eval, rtol=1e-8, atol=1e-8)
+    #     J_opt = sol.y[-1, -1] - sol.y[-1, 0]
+    #     J_opt_seq.append(J_opt)
+    #
+    # J = np.mean(J_seq)
+    # J_opt = np.mean(J_opt_seq)
+    u_error_seq = []
+    samples = np.random.multivariate_normal(mean, cov, 10000)
+
+    for MC in range(10000):
+        w = w_old
+        u = policy(samples[MC])
+        w = w_opt
+        u_opt = policy(samples[MC])
+
+        u_error_seq.append(np.abs(u - u_opt))
+
+    u_error = np.mean(u_error_seq)
 
     folder_name = type(env).__name__ + '/trapz'
     if not os.path.exists(folder_name):
         os.makedirs(folder_name)
     filename = os.path.join(folder_name, f"data_{args_dict['num_points']:02}.npz")
-    np.save(filename, (np.linalg.norm(w_old - w_opt)))
+    np.save(filename, (np.linalg.norm(w_old - w_opt), u_error, np.trace(P-P_opt)*10000))

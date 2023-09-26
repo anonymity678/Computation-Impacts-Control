@@ -12,7 +12,7 @@ plt.rcParams['font.family'] = "sans-serif"
 
 # Custom formatter function
 def my_formatter(x, pos):
-    return "{:.1f}".format(x * 1e3)
+    return "{:.0f}".format(x * 1e6)
 
 folder_name = "./"
 
@@ -34,7 +34,7 @@ sample_points_squared = []
 point_seq = []
 
 for file, color in zip(file_list, colors):
-    w = np.load(os.path.join(folder_name, file), allow_pickle=True)
+    w, _, _ = np.load(os.path.join(folder_name, file), allow_pickle=True)
     sample_point = int(file.split("_")[1].split(".")[0])
 
     w_seq.append(w)
@@ -51,13 +51,13 @@ ax.scatter(sample_points_squared, w_seq, color='ForestGreen', marker='P', s=100)
 
 
 ax.set_xlabel(r'${1}/{N^{4}}$', fontsize=font_size)
-ax.set_ylabel(r'$||\omega-\omega^*||_2$', fontsize=font_size)
+ax.set_ylabel(r'$||\hat{\omega}^{(\infty)}-\omega^*||_2$', fontsize=font_size)
 ax.tick_params(axis='x', labelsize=font_size)
 ax.tick_params(axis='y', labelsize=font_size)
 
 # Using FuncFormatter to format y-axis ticks
 ax.yaxis.set_major_formatter(FuncFormatter(my_formatter))
-ax.annotate(r'$\times 10^{-3}$',
+ax.annotate(r'$\times 10^{-6}$',
             xy=(0.1, 1),
             xycoords='axes fraction',
             xytext=(0, 10),
@@ -67,4 +67,4 @@ ax.annotate(r'$\times 10^{-3}$',
             va='bottom')
 
 plt.tight_layout()
-plt.savefig(f'./sin_Matern_4.pdf')
+plt.savefig(f'./sin_Matern_4_w.pdf')

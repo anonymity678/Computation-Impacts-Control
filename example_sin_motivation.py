@@ -24,7 +24,7 @@ if __name__ == "__main__":
     parser.add_argument('--max_iteration', type=int, default=4,
                         help='max iteration number')
     parser.add_argument('--phin', type=int, default=3, help='Dimension of the phi')
-    parser.add_argument('--learn_type', type=str, default='trapz', help='analytical, trapz, Matern')
+    parser.add_argument('--learn_type', type=str, default='Matern', help='analytical, trapz, Matern')
 
     args = parser.parse_args()
     args_dict = vars(args)

@@ -133,6 +133,9 @@ if __name__ == "__main__":
         print('K-Kopt =', np.linalg.norm(K - env.Kopt))
         iteration += 1
 
+    P = w.reshape(xn, xn)
+    P_opt = w_opt.reshape(xn, xn)
+
     T_eval = 10
     t_eval = np.arange(0, T_eval + 1e-10, sample_interval)
     t_span = [t_eval[0], t_eval[-1]]
@@ -157,4 +160,4 @@ if __name__ == "__main__":
     if not os.path.exists(folder_name):
         os.makedirs(folder_name)
     filename = os.path.join(folder_name, f"data_{args_dict['num_points']:02}.npz")
-    np.save(filename, (np.linalg.norm(w.flatten() - w_opt)))
+    np.save(filename, (np.linalg.norm(w.flatten() - w_opt), K_error, np.trace(P-P_opt)*10000))

@@ -122,30 +122,23 @@ if __name__ == "__main__":
         print('K-Kopt =', np.linalg.norm(K - env.Kopt))
         iteration += 1
 
-    T_eval = 10
+    P = w.reshape(xn, xn)
+    P_opt = w_opt.reshape(xn, xn)
+
+    T_eval = 100
     t_eval = np.arange(0, T_eval + 1e-10, sample_interval)
     t_span = [t_eval[0], t_eval[-1]]
     X0 = np.append(env.x0_env, 0)
     sol = solve_ivp(sample_env, t_span=t_span, y0=X0, method='RK45', t_eval=t_eval, rtol=1e-8, atol=1e-8)
-    x_plot = sol.y[0:-1, :]
     J = sol.y[-1, -1] - sol.y[-1, 0]
-    for i in range(x_plot.shape[0]):
-        x_ref = 2 * np.sin(10 * t)
-        plt.figure(i)
-        plt.plot(t_eval, x_plot.T[:, i])
-    # plt.show()
     K_error = np.linalg.norm(K - env.Kopt)
 
     K = env.Kopt
     sol = solve_ivp(sample_env, t_span=t_span, y0=X0, method='RK45', t_eval=t_eval, rtol=1e-8, atol=1e-8)
     J_opt = sol.y[-1, -1] - sol.y[-1, 0]
-    for i in range(x_plot.shape[0]):
-        x_ref = 2 * np.sin(10 * t)
-        plt.figure(i)
-        plt.plot(t_eval, x_plot.T[:, i])
 
     folder_name = type(env).__name__ + '/trapz'
     if not os.path.exists(folder_name):
         os.makedirs(folder_name)
     filename = os.path.join(folder_name, f"data_{args_dict['num_points']:02}.npz")
-    np.save(filename, (np.linalg.norm(w.flatten() - w_opt)))
+    np.save(filename, (np.linalg.norm(w.flatten() - w_opt), K_error, np.trace(P-P_opt)*10000))
