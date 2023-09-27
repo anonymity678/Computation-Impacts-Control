@@ -1,6 +1,6 @@
 # Impact of Computation in Integral Reinforcement Learning for Continuous-Time Control
 
-This repository explores the impact of computation in integral reinforcement learning for continuous-time control systems. It contains various Python scripts that demonstrate different methods and approaches.
+This repository is the code of the paper "Impact of Computation in Integral Reinforcement Learning for Continuous-Time Control" submitted to ICLR 2024.
 
 ## Environment Requirements
 
