@@ -16,15 +16,12 @@ def my_formatter(x, pos):
 
 folder_name = "./"
 
-# 获取所有的npy文件
 file_list = os.listdir(folder_name)
 file_list = [f for f in file_list if f.endswith('.npy')]
-file_list.sort()  # 排序以确保文件以正确的顺序处理
+file_list.sort()  
 
-# 定义颜色列表
 colormap = cm.get_cmap("tab10", len(file_list))
 
-# 使用映射为每个文件生成颜色
 colors = [colormap(i) for i in range(len(file_list))]
 
 fig, ax = plt.subplots(figsize=(9, 6))
@@ -46,7 +43,6 @@ print(u_seq)
 sample_points_squared = np.array(sample_points_squared)
 point_seq = np.array(point_seq)
 
-# 设置线条宽度和标记大小
 ax.plot(sample_points_squared, u_seq, color='ForestGreen', linestyle='-', linewidth=2, alpha=0.8)
 ax.scatter(sample_points_squared, u_seq, color='ForestGreen', marker='P', s=100)
 # ax.plot(point_seq, J_seq, color='ForestGreen', linestyle='-', linewidth=2, alpha=0.8)

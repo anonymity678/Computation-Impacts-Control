@@ -8,7 +8,6 @@ from sklearn.gaussian_process.kernels import Kernel, Hyperparameter, ConstantKer
 
 warnings.filterwarnings("ignore")
 
-# 自定义Wiener kernel
 class WienerKernel(Kernel):
     def __init__(self, length_scale=1.0, length_scale_bounds=(1e-5, 1e5)):
         self.length_scale = length_scale
@@ -39,7 +38,6 @@ class WienerKernel(Kernel):
     def is_stationary(self):
         return True
 
-# 定义函数
 def func(x):
     return 1 * np.sin(3 * 2 * np.pi / 10 * x) * x / 10 + 2
 
@@ -56,7 +54,6 @@ def gp_predict_1d(x):
     x_array = np.atleast_1d(x)[:, np.newaxis]
     return gp.predict(x_array).squeeze()
 
-# 使用Wiener kernel进行Bayesian Quadrature
 for num_points in num_points_list:
     x_obs = np.linspace(a, b, num_points)
     y_obs = func(x_obs)
@@ -71,7 +68,6 @@ for num_points in num_points_list:
     integral_bq, _ = quad(gp_predict_1d, a, b)
     results[num_points] = integral_bq
 
-    # 绘图代码
     fig, ax = plt.subplots(figsize=(12, 7))
     ax.grid(True, which='major', linestyle='--', linewidth=0.5)
     ax.plot(x, func(x), color='k', lw=2)

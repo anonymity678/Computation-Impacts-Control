@@ -16,15 +16,12 @@ plt.rcParams['font.family'] = "sans-serif"
 
 folder_name = "./"
 
-# 获取所有的npy文件
 file_list = os.listdir(folder_name)
 file_list = [f for f in file_list if f.endswith('.npy')]
-file_list.sort()  # 排序以确保文件以正确的顺序处理
+file_list.sort()  
 
-# 定义颜色列表
 colormap = cm.get_cmap("tab10", len(file_list))
 
-# 使用映射为每个文件生成颜色
 colors = [colormap(i) for i in range(len(file_list))]
 
 fig, ax = plt.subplots(figsize=(9, 6))
@@ -45,7 +42,6 @@ J_seq = np.array(J_seq)
 sample_points_squared = np.array(sample_points_squared)
 point_seq = np.array(point_seq)
 
-# 设置线条宽度和标记大小
 ax.plot(sample_points_squared, J_seq, color='ForestGreen', linestyle='-', linewidth=2, alpha=0.8)
 ax.scatter(sample_points_squared, J_seq, color='ForestGreen', marker='P', s=100)
 
@@ -70,9 +66,9 @@ ax.set_yticks(yticks_original)
 
 # ax.xaxis.set_major_formatter(FuncFormatter(my_formatter2))
 # ax.annotate(r'$\times 10^{-4}$',
-#             xy=(1, -0.1),  # 重新调整箭头的位置以适应x轴
+#             xy=(1, -0.1), 
 #             xycoords='axes fraction',
-#             xytext=(0, -30),  # 重新调整文本的位置以适应x轴
+#             xytext=(0, -30),  
 #             textcoords='offset points',
 #             fontsize=font_size,
 #             ha='right',
